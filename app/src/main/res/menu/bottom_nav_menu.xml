@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/discover"
+        android:icon="@drawable/ic_home_24px"
+        android:title="@string/discover" />
+
+    <item
+        android:id="@+id/food"
+        android:icon="@drawable/ic_restaurant_black_24dp"
+        android:title="@string/food" />
+
+    <item
+        android:id="@+id/study"
+        android:icon="@drawable/ic_local_library_black_24dp"
+        android:title="@string/study" />
+    <item
+        android:id="@+id/tech"
+        android:icon="@drawable/ic_laptop"
+        android:title="@string/tech" />
+
+</menu>
