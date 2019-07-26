@@ -9,11 +9,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
+public class MainActivity extends AppCompatActivity {
 
-public class MainActivity extends AppCompatActivity{
-    private int tabIndex;
-    private PagesManager pagesManager;
+    ScoutPage currentPage = null;
+    ScoutPage[] scoutPages;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -22,20 +23,16 @@ public class MainActivity extends AppCompatActivity{
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.discover:
-                    tabIndex = 0;
-                    updateView();
+                    switchToPage(scoutPages[0]);
                     return true;
                 case R.id.food:
-                    tabIndex = 1;
-                    updateView();
+                    switchToPage(scoutPages[1]);
                     return true;
                 case R.id.study:
-                    tabIndex = 2;
-                    updateView();
+                    switchToPage(scoutPages[2]);
                     return true;
                 case R.id.tech:
-                    tabIndex = 3;
-                    updateView();
+                    switchToPage(scoutPages[3]);
                     return true;
             }
             return false;
@@ -46,50 +43,40 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        //mTextMessage = findViewById(R.id.message);
 
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        pagesManager = new PagesManager(this, "https://scout-test.s.uw.edu/h/seattle/");
-
-        // For this demo app, we force debug logging on. You will only want to do
-        // this for debug builds of your app (it is off by default)
         setTitle("Discover");
 
-        tabIndex = 0;
-        updateView();
+        scoutPages = new ScoutPage[4];
+        scoutPages[0] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), "");
+        scoutPages[1] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), "food");
+        scoutPages[2] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), "study");
+        scoutPages[3] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), "tech");
+
+
+        switchToPage(scoutPages[0]);
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-
-        // Since the webView is shared between activities, we need to tell Turbolinks
-        // to load the location from the previous activity upon restarting
-        pagesManager.activatePage(tabIndex);
     }
 
     @Override
     public void onBackPressed() {
-        if (!pagesManager.popPage())
-            super.onBackPressed();
+        super.onBackPressed();
     }
 
     @Override
     public void finish() {
         super.finish();
-        Log.d("DetailActivity", "finish Called");
     }
-
-    // The starting point for any href clicked inside a Turbolinks enabled site. In a simple case
-    // you can just open another activity, or in more complex cases, this would be a good spot for
-    // routing logic to take you to the right place within your app.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 onBackPressed();
                 return true;
@@ -97,14 +84,10 @@ public class MainActivity extends AppCompatActivity{
         return false;
     }
 
-    // -----------------------------------------------------------------------
-    // Private
-    // -----------------------------------------------------------------------
-
-    // Simply forwards to an error page, but you could alternatively show your own native screen
-    // or do whatever other kind of error handling you want.
-
-    private void updateView() {
-        pagesManager.activatePage(tabIndex);
+    private void switchToPage(ScoutPage page) {
+        if (currentPage != null)
+            currentPage.disable();
+        currentPage = page;
+        currentPage.enable();
     }
 }

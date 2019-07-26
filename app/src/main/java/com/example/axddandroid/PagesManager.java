@@ -27,10 +27,10 @@ public class PagesManager implements TurbolinksAdapter {
         this.BASE_URL = BASE_URL;
 
         initUrls();
-        turbolinksSessions[0] = new TurbolinksSessionManager(mainContext, this, new ScoutBridge(), (TurbolinksView) ((Activity) mainContext).findViewById(R.id.turbolinks_view_discover));
-        turbolinksSessions[1] = new TurbolinksSessionManager(mainContext, this, new ScoutBridge(), (TurbolinksView) ((Activity) mainContext).findViewById(R.id.turbolinks_view_food));
-        turbolinksSessions[2] = new TurbolinksSessionManager(mainContext, this, new ScoutBridge(), (TurbolinksView) ((Activity) mainContext).findViewById(R.id.turbolinks_view_study));
-        turbolinksSessions[3] = new TurbolinksSessionManager(mainContext, this, new ScoutBridge(), (TurbolinksView) ((Activity) mainContext).findViewById(R.id.turbolinks_view_tech));
+//        turbolinksSessions[0] = new TurbolinksSessionManager(mainContext, this, new ScoutBridge(), (TurbolinksView) ((Activity) mainContext).findViewById(R.id.turbolinks_view_discover));
+//        turbolinksSessions[1] = new TurbolinksSessionManager(mainContext, this, new ScoutBridge(), (TurbolinksView) ((Activity) mainContext).findViewById(R.id.turbolinks_view_food));
+//        turbolinksSessions[2] = new TurbolinksSessionManager(mainContext, this, new ScoutBridge(), (TurbolinksView) ((Activity) mainContext).findViewById(R.id.turbolinks_view_study));
+//        turbolinksSessions[3] = new TurbolinksSessionManager(mainContext, this, new ScoutBridge(), (TurbolinksView) ((Activity) mainContext).findViewById(R.id.turbolinks_view_tech));
     }
 
     public void activatePage(int tabIndex) {
