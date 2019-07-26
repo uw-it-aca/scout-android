@@ -17,6 +17,8 @@
         </TableRow>
     </TableLayout!-->
 
+
+
     <FrameLayout
         android:id="@+id/main_frame"
         android:layout_width="match_parent"
@@ -24,6 +26,19 @@
         android:layout_above="@+id/linear_bottombar">
     </FrameLayout>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/filter_submit"
+        android:layout_width="360dp"
+        android:layout_height="582dp"
+        android:layout_above="@+id/linear_bottombar"
+        android:layout_alignEnd="@+id/main_frame"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="24dp"
+        android:background="@color/colorAccent"
+        android:onClick="submitFilters"
+        android:src="@drawable/ic_done"
+        app:backgroundTint="@color/colorPrimaryDark" />
 
     <LinearLayout
         android:id="@+id/linear_bottombar"
