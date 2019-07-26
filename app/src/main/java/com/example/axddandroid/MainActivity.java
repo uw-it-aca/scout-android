@@ -1,12 +1,7 @@
 package com.example.axddandroid;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-
-import com.basecamp.turbolinks.TurbolinksAdapter;
-import com.basecamp.turbolinks.TurbolinksSession;
-import com.basecamp.turbolinks.TurbolinksView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -14,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 
 import android.view.MenuItem;
-import java.util.Stack;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -73,17 +67,13 @@ public class MainActivity extends AppCompatActivity{
 
         // Since the webView is shared between activities, we need to tell Turbolinks
         // to load the location from the previous activity upon restarting
-        pagesManager.ActivatePage(tabIndex);
+        pagesManager.activatePage(tabIndex);
     }
 
     @Override
     public void onBackPressed() {
-        /*if (urls[tabIndex].size() > 1) {
-            urls[tabIndex].pop();
-            updateView();
-        } else {*/
+        if (!pagesManager.popPage())
             super.onBackPressed();
-        //}
     }
 
     @Override
@@ -115,6 +105,6 @@ public class MainActivity extends AppCompatActivity{
     // or do whatever other kind of error handling you want.
 
     private void updateView() {
-        pagesManager.ActivatePage(tabIndex);
+        pagesManager.activatePage(tabIndex);
     }
 }

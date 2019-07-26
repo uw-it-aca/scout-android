@@ -3,7 +3,6 @@ package com.example.axddandroid;
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
-import android.webkit.JavascriptInterface;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,29 +31,27 @@ public class PagesManager implements TurbolinksAdapter {
         turbolinksSessions[1] = new TurbolinksSessionManager(mainContext, this, new ScoutBridge(), (TurbolinksView) ((Activity) mainContext).findViewById(R.id.turbolinks_view_food));
         turbolinksSessions[2] = new TurbolinksSessionManager(mainContext, this, new ScoutBridge(), (TurbolinksView) ((Activity) mainContext).findViewById(R.id.turbolinks_view_study));
         turbolinksSessions[3] = new TurbolinksSessionManager(mainContext, this, new ScoutBridge(), (TurbolinksView) ((Activity) mainContext).findViewById(R.id.turbolinks_view_tech));
-        //turbolinksSessions[4] = new TurbolinksSessionManager(mainContext, this, new ScoutBridge(), (TurbolinksView) ((Activity) mainContext).findViewById(R.id.turbolinks_view_filter));
-        //turbolinksSessions[5] = new TurbolinksSessionManager(mainContext, this, new ScoutBridge(), (TurbolinksView) ((Activity) mainContext).findViewById(R.id.turbolinks_view_detail));
     }
 
-    private void initUrls() {
-        urls = new Stack[4];
-        urls[0] = new Stack<>();
-        urls[0].add(BASE_URL);
-        urls[1] = new Stack<>();
-        urls[1].add(BASE_URL  + "food/");
-        urls[2] = new Stack<>();
-        urls[2].add(BASE_URL  + "study/");
-        urls[3] = new Stack<>();
-        urls[3].add(BASE_URL  + "tech/");
-    }
-
-    public void ActivatePage(int tabIndex) {
+    public void activatePage(int tabIndex) {
         if (activeTab != -1) {
             turbolinksSessions[activeTab].setViewGone();
         }
         activeTab = tabIndex;
+        ((Activity) mainContext).setTitle("");
         turbolinksSessions[activeTab].setViewVisible();
         turbolinksSessions[tabIndex].visit(urls[tabIndex].peek());
+    }
+
+    public boolean popPage() {
+        if (urls[activeTab].size() > 1) {
+            urls[activeTab].pop();
+            activatePage(activeTab);
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -83,18 +80,22 @@ public class PagesManager implements TurbolinksAdapter {
 
     @Override
     public void visitCompleted() {
-
+        ((Activity) mainContext).setTitle(turbolinksSessions[activeTab].getWebView().getTitle());
     }
 
     @Override
     public void visitProposedToLocationWithAction(String location, String action) {
-        ((Activity) mainContext).setTitle(TurbolinksSession.getDefault(mainContext).getWebView().getTitle());
+        if (activeTab != -1) {
+            urls[activeTab].push(location);
+            activatePage(activeTab);
+        }
 
         if (location.matches(".*[0-9]+.*")) {
             ((AppCompatActivity) mainContext).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } else {
             ((AppCompatActivity) mainContext).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
+
     }
 
     private class ScoutBridge implements ScoutBridgeInterface {
@@ -110,6 +111,18 @@ public class PagesManager implements TurbolinksAdapter {
             }
             return false;
         }
+    }
+
+    private void initUrls() {
+        urls = new Stack[4];
+        urls[0] = new Stack<>();
+        urls[0].add(BASE_URL);
+        urls[1] = new Stack<>();
+        urls[1].add(BASE_URL  + "food/");
+        urls[2] = new Stack<>();
+        urls[2].add(BASE_URL  + "study/");
+        urls[3] = new Stack<>();
+        urls[3].add(BASE_URL  + "tech/");
     }
 
 }

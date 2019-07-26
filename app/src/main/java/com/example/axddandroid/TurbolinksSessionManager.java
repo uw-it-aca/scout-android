@@ -6,6 +6,7 @@ import android.location.Location;
 import android.util.Log;
 import android.view.View;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebView;
 
 import com.basecamp.turbolinks.TurbolinksAdapter;
 import com.basecamp.turbolinks.TurbolinksSession;
@@ -36,6 +37,10 @@ public class TurbolinksSessionManager {
                     .view(turbolinksView)
                     .visit(url);
         }
+    }
+
+    public WebView getWebView() {
+        return turbolinksSession.getWebView();
     }
 
     public void setViewGone() {

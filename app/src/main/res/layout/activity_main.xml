@@ -27,16 +27,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"/>
-    <com.basecamp.turbolinks.TurbolinksView
-        android:id="@+id/turbolinks_view_filter"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
-    <com.basecamp.turbolinks.TurbolinksView
-        android:id="@+id/turbolinks_view_detail"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
