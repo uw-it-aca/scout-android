@@ -7,4 +7,7 @@
     <string name="food">Food</string>
     <string name="study">Study</string>
     <string name="tech">Tech</string>
+    <string name="seattle">Seattle</string>
+    <string name="bothell">Bothell</string>
+    <string name="tacoma">Tacoma</string>
 </resources>

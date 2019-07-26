@@ -1,24 +1,40 @@
 package com.example.axddandroid;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    final String[] campus_options = {"Seattle", "Bothell", "Tacoma"};
 
     private ScoutPage currentPage = null;
     private ScoutPage[] scoutPages;
     private BottomNavigationView navView;
-    private Menu menu;
+    private PopupWindow popupWindow;
+
+    public Menu menu;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -27,28 +43,16 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.discover:
-                    menu.getItem(0).setVisible(false);
-                    menu.getItem(1).setVisible(false);
                     switchToPage(scoutPages[0]);
-                    menu.getItem(0).setVisible(true);
                     return true;
                 case R.id.food:
-                    menu.getItem(0).setVisible(false);
-                    menu.getItem(1).setVisible(false);
                     switchToPage(scoutPages[1]);
-                    menu.getItem(1).setVisible(true);
                     return true;
                 case R.id.study:
-                    menu.getItem(0).setVisible(false);
-                    menu.getItem(1).setVisible(false);
                     switchToPage(scoutPages[2]);
-                    menu.getItem(1).setVisible(true);
                     return true;
                 case R.id.tech:
-                    menu.getItem(0).setVisible(false);
-                    menu.getItem(1).setVisible(false);
                     switchToPage(scoutPages[3]);
-                    menu.getItem(1).setVisible(true);
                     return true;
             }
             return false;
@@ -59,25 +63,72 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
         navView = findViewById(R.id.nav_view);
 
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         setTitle("Discover");
 
-        scoutPages = new ScoutPage[4];
-        scoutPages[0] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), "");
-        scoutPages[1] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), "food/");
-        scoutPages[2] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), "study/");
-        scoutPages[3] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), "tech/");
+        SharedPreferences sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
+        String selectedCampus = sharedPreferences.getString("selectedCampus", campus_options[0]);
 
-        findViewById(R.id.filter_submit).setVisibility(View.GONE);
-        switchToPage(scoutPages[0]);
+        scoutPages = new ScoutPage[4];
+        scoutPages[0] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "");
+        scoutPages[1] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "food/");
+        scoutPages[2] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "study/");
+        scoutPages[3] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "tech/");
     }
 
     public void submitFilters(View view) {
         currentPage.submitFiltes();
-        findViewById(R.id.filter_submit).setVisibility(View.GONE);
+    }
+
+    void dialog(){
+        int defaultCampus = 0;
+
+        final SharedPreferences sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
+        if (sharedPreferences.contains("selectedCampus")) {
+            String temp = sharedPreferences.getString("selectedCampus", "");
+            for (int i = 0; i < campus_options.length; i++) {
+                if (campus_options[i].equals(temp)) {
+                    defaultCampus = i;
+                    break;
+                }
+            }
+        }
+
+        final Context context = this;
+        AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
+        alt_bld.setTitle("Select a Campus");
+        alt_bld.setSingleChoiceItems(campus_options, defaultCampus, new DialogInterface
+                .OnClickListener() {
+            public void onClick(DialogInterface dialog, final int item) {
+                SharedPreferences.Editor spEditor = sharedPreferences.edit();
+                if (sharedPreferences.contains("selectedCampus")) {
+                    spEditor.remove("selectedCampus");
+                }
+                spEditor.putString("selectedCampus", campus_options[item]);
+                spEditor.apply();
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        scoutPages[0].disable();
+                        scoutPages[1].disable();
+                        scoutPages[2].disable();
+                        scoutPages[3].disable();
+                        scoutPages[0] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "");
+                        scoutPages[1] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "food/");
+                        scoutPages[2] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "study/");
+                        scoutPages[3] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "tech/");
+                        switchToPage(scoutPages[0]);
+                    }
+                });
+                dialog.dismiss();
+
+            }
+        });
+        AlertDialog alert = alt_bld.create();
+        alert.show();
     }
 
     @Override
@@ -87,9 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (currentPage.popPageInstance())
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        else
+        if (!currentPage.popPageInstance())
             super.onBackPressed();
     }
 
@@ -118,8 +167,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         this.menu = menu;
-        menu.getItem(0).setVisible(true);
-        menu.getItem(1).setVisible(false);
+        switchToPage(scoutPages[0]);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -133,9 +181,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_filter) {
             currentPage.launchFilter();
-            findViewById(R.id.filter_submit).setVisibility(View.VISIBLE);
         } else if (id == R.id.action_campus) {
-            //showCampusChooser();
+            dialog();
         } else if (id == android.R.id.home)
             onBackPressed();
 

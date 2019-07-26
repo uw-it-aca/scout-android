@@ -2,7 +2,9 @@ package com.example.axddandroid;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -37,17 +39,37 @@ public class ScoutPage implements TurbolinksAdapter {
         public void enableInstance(boolean force) {
             turbolinksView.setVisibility(View.VISIBLE);
 
+            ((MainActivity) context).menu.getItem(0).setVisible(false);
+            ((MainActivity) context).menu.getItem(1).setVisible(false);
+            ((AppCompatActivity) context).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+            if (url.matches(".*/filter/.*"))
+                ((AppCompatActivity) context).findViewById(R.id.filter_submit).setVisibility(View.VISIBLE);
+            else {
+                ((AppCompatActivity) context).findViewById(R.id.filter_submit).setVisibility(View.GONE);
+                if (pageInstances.size() > 1)
+                    ((AppCompatActivity) context).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                else {
+                    if (url.matches(".*/(food|study|tech)/((?!((filter|[0-9]+)/|\\?h=true))).*"))
+                        ((MainActivity) context).menu.getItem(1).setVisible(true);
+                    else if (pageInstances.size() == 1)
+                        ((MainActivity) context).menu.getItem(0).setVisible(true);
+                }
+            }
+
             Log.d("Filter Status", filterParams);
-            if (force || turbolinksSession.getWebView().getUrl() == null || !turbolinksSession.getWebView().getUrl().equals(url + filterParams))
+            if (force || turbolinksSession.getWebView().getUrl() == null || !turbolinksSession.getWebView().getUrl().equals(url + filterParams)) {
+                ((AppCompatActivity) context).setTitle("");
                 turbolinksSession.activity((Activity) context)
                         .adapter(parentScoutPage)
                         .view(turbolinksView)
                         .visit(url + filterParams);
+            }
             else
                 ((Activity) context).setTitle(pageInstances.peek().turbolinksSession.getWebView().getTitle());
         }
 
-        public void disableInstance() {
+        void disableInstance() {
             turbolinksView.setVisibility(View.GONE);
         }
 
@@ -60,34 +82,35 @@ public class ScoutPage implements TurbolinksAdapter {
         }
     }
 
-    public static ScoutLocation location = null;
-    private String base_url = "https://scout-test.s.uw.edu/h/seattle/";
+    private String base_url = "https://scout-test.s.uw.edu/h/";
     private Stack<PageInstance> pageInstances;
     private FrameLayout parentComponent;
     private Context context;
     private boolean inFilterMode = false;
     private String filterParams = "";
 
-    public ScoutPage(Context context, FrameLayout parentComponent, String subUrl) {
+    static ScoutLocation location = null;
+
+    ScoutPage(Context context, FrameLayout parentComponent, String campus, String subUrl) {
         this.parentComponent = parentComponent;
         this.context = context;
         if (location == null)
             location = new ScoutLocation(context);
 
         pageInstances = new Stack<>();
-        this.base_url += subUrl;
+        this.base_url += campus.toLowerCase() + "/" + subUrl;
         stackPageInstance(base_url);
     }
 
-    public void enable(boolean force) {
+    void enable(boolean force) {
         pageInstances.peek().enableInstance(force);
     }
 
-    public void disable() {
+    void disable() {
         pageInstances.peek().disableInstance();
     }
 
-    public boolean popPageInstance() {
+    boolean popPageInstance() {
         if (pageInstances.size() > 1) {
             pageInstances.peek().disableInstance();
             pageInstances.pop();
@@ -97,14 +120,14 @@ public class ScoutPage implements TurbolinksAdapter {
         return false;
     }
 
-    public void launchFilter() {
+    void launchFilter() {
         stackPageInstance(base_url + "filter/");
         enable(false);
         inFilterMode = true;
         filterParams = "";
     }
 
-    public void submitFiltes() {
+    void submitFiltes() {
         inFilterMode = false;
         pageInstances.peek().turbolinksSession.runJavascript("document.querySelectorAll('a')[0].click");
         popPageInstance();
@@ -133,18 +156,20 @@ public class ScoutPage implements TurbolinksAdapter {
     @Override
     public void visitCompleted() {
         ((Activity) context).setTitle(pageInstances.peek().turbolinksSession.getWebView().getTitle());
-
-        if (pageInstances.peek().turbolinksSession.getWebView().getUrl().matches(".*/[0-9]+/.*"))
-            ((AppCompatActivity) context).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        else
-            ((AppCompatActivity) context).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     @Override
     public void visitProposedToLocationWithAction(String location, String action) {
-        stackPageInstance(location);
-        enable(false);
-        ((Activity) context).setTitle("");
+        if (pageInstances.peek().turbolinksSession.getWebView().getUrl().matches(".*/[0-9]+/.*")) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(location));
+            ((Activity) context).startActivity(browserIntent);
+        }
+        else {
+            stackPageInstance(location);
+            enable(false);
+            ((Activity) context).setTitle("");
+        }
+
     }
 
     @JavascriptInterface
