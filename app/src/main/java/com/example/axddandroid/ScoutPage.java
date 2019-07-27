@@ -74,7 +74,6 @@ public class ScoutPage implements TurbolinksAdapter {
         }
 
         private void initView() {
-            turbolinksSession.setDebugLoggingEnabled(true);
             turbolinksView.setLayoutParams(
                     new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
             turbolinksView.setVisibility(View.GONE);

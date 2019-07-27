@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     private ScoutPage currentPage = null;
     private ScoutPage[] scoutPages;
     private BottomNavigationView navView;
-    private PopupWindow popupWindow;
 
     public Menu menu;
 
