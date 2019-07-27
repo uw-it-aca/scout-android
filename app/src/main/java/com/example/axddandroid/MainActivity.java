@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -13,17 +12,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.PopupMenu;
-import android.widget.PopupWindow;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -79,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void submitFilters(View view) {
-        currentPage.submitFiltes();
+        currentPage.submitFilters();
     }
 
     void dialog(){
@@ -137,7 +129,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (!currentPage.popPageInstance())
+        if (currentPage.popPageInstance())
+            currentPage.enable(false);
+        else
             super.onBackPressed();
     }
 

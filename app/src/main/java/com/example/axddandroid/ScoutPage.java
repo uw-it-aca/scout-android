@@ -74,6 +74,7 @@ public class ScoutPage implements TurbolinksAdapter {
         }
 
         private void initView() {
+            turbolinksSession.setDebugLoggingEnabled(true);
             turbolinksView.setLayoutParams(
                     new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
             turbolinksView.setVisibility(View.GONE);
@@ -113,7 +114,6 @@ public class ScoutPage implements TurbolinksAdapter {
         if (pageInstances.size() > 1) {
             pageInstances.peek().disableInstance();
             pageInstances.pop();
-            enable(false);
             return true;
         }
         return false;
@@ -126,7 +126,7 @@ public class ScoutPage implements TurbolinksAdapter {
         filterParams = "";
     }
 
-    void submitFiltes() {
+    void submitFilters() {
         inFilterMode = false;
         pageInstances.peek().turbolinksSession.runJavascript("document.querySelectorAll('a')[0].click");
         popPageInstance();
@@ -173,7 +173,7 @@ public class ScoutPage implements TurbolinksAdapter {
 
     @JavascriptInterface
     public void setParams(String param) {
-        Log.d("ScoutBridgeCall", param);
+        Log.d("ScoutBridgeCall", "With params: " + param + " and inFilterMode is " + inFilterMode);
         if (param.equals("renderWebview")) {
             Location physicalLocation = location.getLocation();
             pageInstances.peek().turbolinksSession.runJavascript(
