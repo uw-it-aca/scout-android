@@ -28,7 +28,6 @@ public class ScoutPage implements TurbolinksAdapter {
         private TurbolinksView turbolinksView;
         private String url;
         private ScoutPage parentScoutPage;
-        private String blah;
 
         public PageInstance(TurbolinksSession turbolinksSession, TurbolinksView turbolinksView, String url, ScoutPage parentScoutPage) {
             this.turbolinksSession = turbolinksSession;
