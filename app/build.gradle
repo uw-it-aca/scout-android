@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+// Define scout.url in your local.properties file
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def url = properties.getProperty('scout.url');
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -9,6 +14,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resValue "string", "baseUrl", "${url}"
     }
     buildTypes {
         release {

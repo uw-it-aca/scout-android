@@ -37,6 +37,7 @@ public class ScoutPage implements TurbolinksAdapter {
         }
 
         public void enableInstance(boolean force) {
+
             turbolinksView.setVisibility(View.VISIBLE);
 
             ((MainActivity) context).menu.getItem(0).setVisible(false);
@@ -82,7 +83,7 @@ public class ScoutPage implements TurbolinksAdapter {
         }
     }
 
-    private String base_url = "https://scout-test.s.uw.edu/h/";
+    private String base_url;
     private Stack<PageInstance> pageInstances;
     private FrameLayout parentComponent;
     private Context context;
@@ -94,6 +95,7 @@ public class ScoutPage implements TurbolinksAdapter {
     ScoutPage(Context context, FrameLayout parentComponent, String campus, String subUrl) {
         this.parentComponent = parentComponent;
         this.context = context;
+        this.base_url = context.getResources().getString(R.string.baseUrl);
         if (location == null)
             location = new ScoutLocation(context);
 
