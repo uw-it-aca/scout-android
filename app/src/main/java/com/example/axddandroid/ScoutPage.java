@@ -11,6 +11,8 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.widget.FrameLayout;
 
+import android.view.animation.TranslateAnimation;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.basecamp.turbolinks.TurbolinksAdapter;
@@ -26,6 +28,7 @@ public class ScoutPage implements TurbolinksAdapter {
         private TurbolinksView turbolinksView;
         private String url;
         private ScoutPage parentScoutPage;
+        private String blah;
 
         public PageInstance(TurbolinksSession turbolinksSession, TurbolinksView turbolinksView, String url, ScoutPage parentScoutPage) {
             this.turbolinksSession = turbolinksSession;
@@ -71,14 +74,38 @@ public class ScoutPage implements TurbolinksAdapter {
         }
 
         void disableInstance() {
+
+            // R to L animation
+            /*
+            TranslateAnimation animate = new TranslateAnimation(0,-turbolinksView.getWidth(),0,0);
+            animate.setDuration(500);
+            animate.setFillAfter(true);
+            turbolinksView.startAnimation(animate);
+            */
+
+            // L to R animation
+            /*
+            TranslateAnimation animate = new TranslateAnimation(0,turbolinksView.getWidth(),0,0);
+            animate.setDuration(500);
+            animate.setFillAfter(true);
+            turbolinksView.startAnimation(animate);
+            */
+
+            // check if advance vs restore??
+
             turbolinksView.setVisibility(View.GONE);
+
         }
 
         private void initView() {
+
+
             turbolinksSession.setDebugLoggingEnabled(true);
             turbolinksView.setLayoutParams(
                     new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+
             turbolinksView.setVisibility(View.GONE);
+
             parentScoutPage.parentComponent.addView(turbolinksView);
         }
     }

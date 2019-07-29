@@ -19,6 +19,9 @@
 
     <FrameLayout
         android:id="@+id/main_frame"
+
+        android:animateLayoutChanges="false"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/linear_bottombar">
@@ -60,6 +63,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
+                app:labelVisibilityMode="labeled"
                 app:menu="@menu/bottom_nav_menu" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
