@@ -38,7 +38,21 @@ public class ScoutPage implements TurbolinksAdapter {
             initView();
         }
 
-        public void enableInstance(boolean force) {
+        public void enableInstance(boolean force, boolean slide) {
+
+
+            if (slide) {
+
+                Log.d("enableInstance", "let is slide : " + turbolinksView.getWidth() );
+
+                TranslateAnimation animate = new TranslateAnimation(1440,0,0,0);
+                animate.setDuration(700);
+                animate.setFillAfter(true);
+                turbolinksView.startAnimation(animate);
+
+                Log.d("enableInstance", "let is slide : " + turbolinksView.getWidth() );
+            }
+
 
             turbolinksView.setVisibility(View.VISIBLE);
 
@@ -130,11 +144,11 @@ public class ScoutPage implements TurbolinksAdapter {
         stackPageInstance(base_url);
     }
 
-    void enable(boolean force) {
-        pageInstances.peek().enableInstance(force);
+    void enable(boolean force, boolean slide) {
+        pageInstances.peek().enableInstance(force, slide);
     }
 
-    void disable() {
+    void disable(boolean slide) {
         pageInstances.peek().disableInstance();
     }
 
@@ -149,7 +163,7 @@ public class ScoutPage implements TurbolinksAdapter {
 
     void launchFilter() {
         stackPageInstance(base_url + "filter/");
-        enable(false);
+        enable(false, false);
         inFilterMode = true;
         filterParams = "";
     }
@@ -187,13 +201,21 @@ public class ScoutPage implements TurbolinksAdapter {
 
     @Override
     public void visitProposedToLocationWithAction(String location, String action) {
+
+        // check to see if user is on details screen and visiting an external link
         if (pageInstances.peek().turbolinksSession.getWebView().getUrl().matches(".*/[0-9]+/.*")) {
+
+            // open a NEW browser window outside of the app
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(location));
             ((Activity) context).startActivity(browserIntent);
         }
         else {
+
+            Log.d("visitProposedToLocationWithAction", "following a turbolinks page request");
+
+            // handle turbolinks navigation requests in app
             stackPageInstance(location);
-            enable(false);
+            enable(false, true);
             ((Activity) context).setTitle("");
         }
 
@@ -215,7 +237,7 @@ public class ScoutPage implements TurbolinksAdapter {
                 ((Activity) context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        enable(false);
+                        enable(false, false);
                     }
                 });
             }

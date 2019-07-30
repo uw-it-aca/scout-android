@@ -103,10 +103,10 @@ public class MainActivity extends AppCompatActivity {
                 ((Activity) context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        scoutPages[0].disable();
-                        scoutPages[1].disable();
-                        scoutPages[2].disable();
-                        scoutPages[3].disable();
+                        scoutPages[0].disable(false);
+                        scoutPages[1].disable(false);
+                        scoutPages[2].disable(false);
+                        scoutPages[3].disable(false);
                         scoutPages[0] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "");
                         scoutPages[1] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "food/");
                         scoutPages[2] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "study/");
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (currentPage.popPageInstance())
-            currentPage.enable(false);
+            currentPage.enable(false, false);
         else
             super.onBackPressed();
     }
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == 0 && currentPage.location != null) {
             currentPage.location.setUpLocationListeners();
-            currentPage.enable(true);
+            currentPage.enable(true, false);
         }
     }
 
@@ -184,8 +184,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void switchToPage(ScoutPage page) {
         if (currentPage != null)
-            currentPage.disable();
+            currentPage.disable(false);
         currentPage = page;
-        currentPage.enable(false);
+        currentPage.enable(false, false);
     }
 }
