@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onRestart() {
+        currentPage.location.setUpLocationListeners();
         super.onRestart();
     }
 
@@ -133,6 +134,12 @@ public class MainActivity extends AppCompatActivity {
             currentPage.enable(false);
         else
             super.onBackPressed();
+    }
+
+    @Override
+    protected void onStop() {
+        currentPage.location.killLocationListners();
+        super.onStop();
     }
 
     @Override

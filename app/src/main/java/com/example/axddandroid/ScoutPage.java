@@ -116,7 +116,7 @@ public class ScoutPage implements TurbolinksAdapter {
     private boolean inFilterMode = false;
     private String filterParams = "";
 
-    static ScoutLocation location = null;
+    public static ScoutLocation location = null;
 
     ScoutPage(Context context, FrameLayout parentComponent, String campus, String subUrl) {
         this.parentComponent = parentComponent;
