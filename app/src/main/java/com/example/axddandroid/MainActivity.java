@@ -21,11 +21,12 @@ public class MainActivity extends AppCompatActivity {
 
     final String[] campus_options = {"Seattle", "Bothell", "Tacoma"};
 
-    private ScoutPage currentPage = null;
     private ScoutPage[] scoutPages;
     private BottomNavigationView navView;
 
     public Menu menu;
+
+    ScoutPage currentPage = null;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
