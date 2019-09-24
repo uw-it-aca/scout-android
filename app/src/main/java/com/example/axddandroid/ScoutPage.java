@@ -178,7 +178,7 @@ public class ScoutPage implements TurbolinksAdapter {
         stackPageInstance(base_url + "filter/");
         enable(false);
         inFilterMode = true;
-        filterParams = "";
+        //filterParams = "";
     }
 
     void submitFilters() {
