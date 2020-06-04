@@ -21,11 +21,12 @@ public class MainActivity extends AppCompatActivity {
 
     final String[] campus_options = {"Seattle", "Bothell", "Tacoma"};
 
-    private ScoutPage currentPage = null;
     private ScoutPage[] scoutPages;
     private BottomNavigationView navView;
 
     public Menu menu;
+
+    ScoutPage currentPage = null;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -124,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onRestart() {
+        currentPage.location.setUpLocationListeners();
         super.onRestart();
     }
 
@@ -133,6 +135,12 @@ public class MainActivity extends AppCompatActivity {
             currentPage.enable(false);
         else
             super.onBackPressed();
+    }
+
+    @Override
+    protected void onStop() {
+        currentPage.location.killLocationListners();
+        super.onStop();
     }
 
     @Override

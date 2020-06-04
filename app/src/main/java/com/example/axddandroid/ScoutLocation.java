@@ -24,6 +24,8 @@ public class ScoutLocation {
 
     private Location mLocation;
     private Context mContext;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
 
     public ScoutLocation(Context context) {
         mContext = context;
@@ -44,12 +46,13 @@ public class ScoutLocation {
     }
 
     public void setUpLocationListeners () {
-        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if ((ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) && locationManager == null) {
 
-            LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+            locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
 
             // Define a listener that responds to location updates
-            LocationListener locationListener = new LocationListener() {
+            locationListener = new LocationListener() {
                 public void onLocationChanged(Location location) {
                     // Called when a new location is found by the network location provider.
                     locationUpdate(location);
@@ -75,6 +78,13 @@ public class ScoutLocation {
                 }
             }
         }
+    }
+
+    public void killLocationListners() {
+        if (locationManager != null)
+            locationManager.removeUpdates(locationListener);
+        locationManager = null;
+        locationListener = null;
     }
 
     public Location getLocation () {

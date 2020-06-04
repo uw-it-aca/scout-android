@@ -12,6 +12,7 @@ import android.webkit.JavascriptInterface;
 import android.widget.FrameLayout;
 
 import android.view.animation.TranslateAnimation;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +20,10 @@ import com.basecamp.turbolinks.TurbolinksAdapter;
 import com.basecamp.turbolinks.TurbolinksSession;
 import com.basecamp.turbolinks.TurbolinksView;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.Stack;
 
 public class ScoutPage implements TurbolinksAdapter {
@@ -62,11 +67,35 @@ public class ScoutPage implements TurbolinksAdapter {
 
             Log.d("Filter Status", filterParams);
             if (force || turbolinksSession.getWebView().getUrl() == null || !turbolinksSession.getWebView().getUrl().equals(url + filterParams)) {
-                ((AppCompatActivity) context).setTitle("");
-                turbolinksSession.activity((Activity) context)
-                        .adapter(parentScoutPage)
-                        .view(turbolinksView)
-                        .visit(url + filterParams);
+                new Thread() {
+                    public void run() {
+                        if (!isOnline()) {
+                            ((MainActivity) context).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    turbolinksSession.activity((Activity) context)
+                                            .adapter(parentScoutPage)
+                                            .view(turbolinksView);
+                                    Toast toast = Toast.makeText(context, "No internet", Toast.LENGTH_SHORT);
+                                    toast.setText("No internet");
+                                    toast.show();
+                                }
+                            });
+                        }
+                        else
+                            ((MainActivity) context).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ((AppCompatActivity) context).setTitle("");
+                                    turbolinksSession.activity((Activity) context)
+                                            .adapter(parentScoutPage)
+                                            .view(turbolinksView)
+                                            .visit(url + filterParams);
+                                    turbolinksSession.setPullToRefreshEnabled(true);
+                                }
+                            });
+                    }
+                }.start();
             }
             else
                 ((Activity) context).setTitle(pageInstances.peek().turbolinksSession.getWebView().getTitle());
@@ -97,8 +126,6 @@ public class ScoutPage implements TurbolinksAdapter {
         }
 
         private void initView() {
-
-
             turbolinksSession.setDebugLoggingEnabled(true);
             turbolinksView.setLayoutParams(
                     new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
@@ -116,7 +143,7 @@ public class ScoutPage implements TurbolinksAdapter {
     private boolean inFilterMode = false;
     private String filterParams = "";
 
-    static ScoutLocation location = null;
+    public static ScoutLocation location = null;
 
     ScoutPage(Context context, FrameLayout parentComponent, String campus, String subUrl) {
         this.parentComponent = parentComponent;
@@ -151,7 +178,7 @@ public class ScoutPage implements TurbolinksAdapter {
         stackPageInstance(base_url + "filter/");
         enable(false);
         inFilterMode = true;
-        filterParams = "";
+        //filterParams = "";
     }
 
     void submitFilters() {
@@ -182,7 +209,9 @@ public class ScoutPage implements TurbolinksAdapter {
 
     @Override
     public void visitCompleted() {
-        ((Activity) context).setTitle(pageInstances.peek().turbolinksSession.getWebView().getTitle());
+        if (((MainActivity) context).currentPage == this) {
+            ((Activity) context).setTitle(pageInstances.peek().turbolinksSession.getWebView().getTitle());
+        }
     }
 
     @Override
@@ -228,4 +257,19 @@ public class ScoutPage implements TurbolinksAdapter {
         pageInstances.push(new PageInstance(TurbolinksSession.getNew(context), new TurbolinksView(context), url, this));
         pageInstances.peek().turbolinksSession.addJavascriptInterface(this, "scoutBridge");
     }
+
+    public boolean isOnline() {
+        try {
+            int timeoutMs = 1500;
+            Socket sock = new Socket();
+            SocketAddress sockaddr = new InetSocketAddress("8.8.8.8", 53);
+
+            sock.connect(sockaddr, timeoutMs);
+            sock.close();
+
+            return true;
+        } catch (IOException e) { return false; }
+    }
+
+
 }
