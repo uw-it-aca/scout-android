@@ -40,8 +40,6 @@ public class ScoutLocation {
             };
             ActivityCompat.requestPermissions((Activity) mContext,permissionsList,0);
             Log.d("LOCATION", "No Permissions, using campus default");
-        } else {
-            setUpLocationListeners();
         }
     }
 
