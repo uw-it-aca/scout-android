@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     final String[] campus_options = {"Seattle", "Bothell", "Tacoma"};
 
+    private ScoutLocation location;
     private ScoutPage[] scoutPages;
     private BottomNavigationView navView;
 
@@ -64,11 +66,13 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
         String selectedCampus = sharedPreferences.getString("selectedCampus", campus_options[0]);
 
+        location = new ScoutLocation(this);
+
         scoutPages = new ScoutPage[4];
-        scoutPages[0] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "");
-        scoutPages[1] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "food/");
-        scoutPages[2] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "study/");
-        scoutPages[3] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "tech/");
+        scoutPages[0] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "", location);
+        scoutPages[1] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "food/", location);
+        scoutPages[2] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "study/", location);
+        scoutPages[3] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "tech/", location);
     }
 
     public void submitFilters(View view) {
@@ -108,10 +112,10 @@ public class MainActivity extends AppCompatActivity {
                         scoutPages[1].disable();
                         scoutPages[2].disable();
                         scoutPages[3].disable();
-                        scoutPages[0] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "");
-                        scoutPages[1] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "food/");
-                        scoutPages[2] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "study/");
-                        scoutPages[3] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "tech/");
+                        scoutPages[0] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "", location);
+                        scoutPages[1] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "food/", location);
+                        scoutPages[2] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "study/", location);
+                        scoutPages[3] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "tech/", location);
                         switchToPage(scoutPages[0]);
                     }
                 });
@@ -124,9 +128,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestart() {
-        currentPage.location.setUpLocationListeners();
-        super.onRestart();
+    protected void onResume() {
+        location.setUpLocationListeners();
+        if (currentPage != null) {
+            currentPage.enable(true);
+        }
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        location.killLocationListners();
+        super.onPause();
     }
 
     @Override
@@ -135,12 +148,6 @@ public class MainActivity extends AppCompatActivity {
             currentPage.enable(false);
         else
             super.onBackPressed();
-    }
-
-    @Override
-    protected void onStop() {
-        currentPage.location.killLocationListners();
-        super.onStop();
     }
 
     @Override

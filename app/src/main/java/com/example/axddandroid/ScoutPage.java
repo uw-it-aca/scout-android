@@ -21,6 +21,7 @@ import com.basecamp.turbolinks.TurbolinksSession;
 import com.basecamp.turbolinks.TurbolinksView;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -65,7 +66,7 @@ public class ScoutPage implements TurbolinksAdapter {
                 }
             }
 
-            Log.d("Filter Status", filterParams);
+            Log.d("FilterStatus", filterParams);
             if (force || turbolinksSession.getWebView().getUrl() == null || !turbolinksSession.getWebView().getUrl().equals(url + filterParams)) {
                 new Thread() {
                     public void run() {
@@ -142,15 +143,13 @@ public class ScoutPage implements TurbolinksAdapter {
     private Context context;
     private boolean inFilterMode = false;
     private String filterParams = "";
+    public ScoutLocation location = null;
 
-    public static ScoutLocation location = null;
-
-    ScoutPage(Context context, FrameLayout parentComponent, String campus, String subUrl) {
+    ScoutPage(Context context, FrameLayout parentComponent, String campus, String subUrl, ScoutLocation location) {
         this.parentComponent = parentComponent;
         this.context = context;
         this.base_url = context.getResources().getString(R.string.baseUrl);
-        if (location == null)
-            location = new ScoutLocation(context);
+        this.location = location;
 
         pageInstances = new Stack<>();
         this.base_url += campus.toLowerCase() + "/" + subUrl;
@@ -225,7 +224,6 @@ public class ScoutPage implements TurbolinksAdapter {
             enable(false);
             ((Activity) context).setTitle("");
         }
-
     }
 
     @JavascriptInterface
@@ -260,16 +258,8 @@ public class ScoutPage implements TurbolinksAdapter {
 
     public boolean isOnline() {
         try {
-            int timeoutMs = 1500;
-            Socket sock = new Socket();
-            SocketAddress sockaddr = new InetSocketAddress("8.8.8.8", 53);
-
-            sock.connect(sockaddr, timeoutMs);
-            sock.close();
-
-            return true;
+            InetAddress ipAddr = InetAddress.getByName("www.washington.edu");
+            return !ipAddr.equals("");
         } catch (IOException e) { return false; }
     }
-
-
 }
