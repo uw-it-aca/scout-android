@@ -1,17 +1,15 @@
-package com.example.axddandroid;
+package edu.uw.UWScout;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.widget.FrameLayout;
 
-import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,12 +17,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.basecamp.turbolinks.TurbolinksAdapter;
 import com.basecamp.turbolinks.TurbolinksSession;
 import com.basecamp.turbolinks.TurbolinksView;
+import com.example.axddandroid.R;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.Stack;
 
 public class ScoutPage implements TurbolinksAdapter {

@@ -1,4 +1,4 @@
-package com.example.axddandroid;
+package edu.uw.UWScout;
 
 import android.content.Context;
 
