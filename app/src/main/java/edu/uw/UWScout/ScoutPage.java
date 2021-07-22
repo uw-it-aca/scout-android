@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.basecamp.turbolinks.TurbolinksAdapter;
 import com.basecamp.turbolinks.TurbolinksSession;
 import com.basecamp.turbolinks.TurbolinksView;
-import com.example.axddandroid.R;
 
 import java.io.IOException;
 import java.net.InetAddress;
