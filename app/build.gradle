@@ -8,7 +8,7 @@ def url = properties.getProperty('scout.url');
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.axddandroid"
+        applicationId "edu.uw.UWScout"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 2
