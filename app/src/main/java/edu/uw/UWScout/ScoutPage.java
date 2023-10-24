@@ -138,7 +138,7 @@ public class ScoutPage implements TurbolinksAdapter {
     private Context context;
     private boolean inFilterMode = false;
     private String filterParams = "";
-    public ScoutLocation location = null;
+    public ScoutLocation location;
 
     ScoutPage(Context context, FrameLayout parentComponent, String campus, String subUrl, ScoutLocation location) {
         this.parentComponent = parentComponent;
@@ -212,7 +212,7 @@ public class ScoutPage implements TurbolinksAdapter {
     public void visitProposedToLocationWithAction(String location, String action) {
         if (pageInstances.peek().turbolinksSession.getWebView().getUrl().matches(".*/[0-9]+/.*")) {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(location));
-            ((Activity) context).startActivity(browserIntent);
+            context.startActivity(browserIntent);
         }
         else {
             stackPageInstance(location);

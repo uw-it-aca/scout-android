@@ -5,17 +5,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.annotation.NonNull;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
         location = new ScoutLocation(this);
 
         scoutPages = new ScoutPage[4];
-        scoutPages[0] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "", location);
-        scoutPages[1] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "food/", location);
-        scoutPages[2] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "study/", location);
-        scoutPages[3] = new ScoutPage(this, (FrameLayout) findViewById(R.id.main_frame), selectedCampus, "tech/", location);
+        scoutPages[0] = new ScoutPage(this, findViewById(R.id.main_frame), selectedCampus, "", location);
+        scoutPages[1] = new ScoutPage(this, findViewById(R.id.main_frame), selectedCampus, "food/", location);
+        scoutPages[2] = new ScoutPage(this, findViewById(R.id.main_frame), selectedCampus, "study/", location);
+        scoutPages[3] = new ScoutPage(this, findViewById(R.id.main_frame), selectedCampus, "tech/", location);
     }
 
     public void submitFilters(View view) {
@@ -111,10 +109,10 @@ public class MainActivity extends AppCompatActivity {
                         scoutPages[1].disable();
                         scoutPages[2].disable();
                         scoutPages[3].disable();
-                        scoutPages[0] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "", location);
-                        scoutPages[1] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "food/", location);
-                        scoutPages[2] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "study/", location);
-                        scoutPages[3] = new ScoutPage(context, (FrameLayout) findViewById(R.id.main_frame), campus_options[item], "tech/", location);
+                        scoutPages[0] = new ScoutPage(context, findViewById(R.id.main_frame), campus_options[item], "", location);
+                        scoutPages[1] = new ScoutPage(context, findViewById(R.id.main_frame), campus_options[item], "food/", location);
+                        scoutPages[2] = new ScoutPage(context, findViewById(R.id.main_frame), campus_options[item], "study/", location);
+                        scoutPages[3] = new ScoutPage(context, findViewById(R.id.main_frame), campus_options[item], "tech/", location);
                         switchToPage(scoutPages[0]);
                     }
                 });
